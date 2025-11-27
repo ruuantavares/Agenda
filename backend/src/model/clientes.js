@@ -17,6 +17,12 @@ class Clientes {
       },
       senha: {
         type: DataBase.db.Sequelize.STRING,
+      },
+      ativo: {
+        type: DataBase.db.Sequelize.BOOLEAN
+      },
+      roles: {
+        type: DataBase.db.Sequelize.INTEGER
       }
     });
   }

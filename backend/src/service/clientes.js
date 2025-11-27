@@ -1,27 +1,38 @@
 import Clientes from "../model/clientes.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import Atendimento from "../model/atendimento.js"
 
 const JWT_SECRET = "NAO-TEM-SEGREDO";
 const SALT = 10;
 
 class ServiceClientes {
   async FindAll() {
-    const clientes = await Clientes.findAll();
+    const clientes = await Clientes.findAll({
+      include:[{
+        model: Atendimento,
+        attributes: ['id', 'dia', 'horario', 'valor', 'concluido', 'user']
+      }]
+    });
     return clientes
   }
   async FindOne(id) {
     if (!id) {
       throw new Error("Favor informar o ID");
     }
-    const cliente = await Clientes.findByPk(id);
+    const cliente = await Clientes.findByPk(id, {
+      include:[{
+        model: Atendimento,
+        attributes: ['id', 'dia', 'horario', 'valor', 'concluido', 'user']
+      }]
+    });
     if (!cliente) {
       throw new Error("Cliente não encontrado");
     }
 
     return cliente;
   }
-  async Create(nome, email, senha) {
+  async Create(nome, email, senha, ativo, roles) {
     if (!nome || !email || !senha) {
       throw new Error("Favor preencher todos os campos");
     }
@@ -31,12 +42,13 @@ class ServiceClientes {
       nome,
       email,
       senha: senhaCrip,
-      ativo: true
+      ativo,
+      roles
     });
   }
-  async Update(id, nome, senha) {
-    if (!id) {
-      throw new Error("Favor informar o ID");
+  async Update(id, nome, email, senha) {
+    if (!id || !nome || !email || !senha) {
+      throw new Error("Favor preencher os campos");
     }
     const oldClient = await Clientes.findByPk(id);
 
@@ -44,7 +56,10 @@ class ServiceClientes {
       throw new Error("Cliente não encontrado");
     }
     oldClient.nome = nome || oldClient.nome;
-    oldClient.senha = senha || oldClient.senha;
+    oldClient.email = email || oldClient.email;
+    oldClient.senha = senha
+      ? await bcrypt.hash(String(senha), SALT)
+      : oldClient.senha;
 
     return oldClient.save();
   }
@@ -52,11 +67,11 @@ class ServiceClientes {
     if (!id) {
       throw new Error("Favor informar o ID");
     }
-    const oldClient = await Clientes.findByPk(id);
-    if (!oldClient) {
+    const client = await Clientes.findByPk(id);
+    if (!client) {
       throw new Error("Cliente não encontrado");
     }
-    oldClient.destroy();
+    return client.destroy();
   }
 
   async Login(email, senha) {

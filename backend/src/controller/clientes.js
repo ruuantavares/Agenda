@@ -3,7 +3,7 @@ import ServiceClientes from "../service/clientes.js";
 class ControllerClientes {
   async FindAll(_, res) {
     try {
-      const clientes = await ServiceClientes.findAll();
+      const clientes = await ServiceClientes.FindAll();
       res.status(200).send({
         data: clientes,
         message: "Clientes encontrados com sucesso",
@@ -17,7 +17,7 @@ class ControllerClientes {
   async FindOne(req, res) {
     try {
       const id = req.params.id;
-      const clientes = await ServiceClientes.findOne(id);
+      const clientes = await ServiceClientes.FindOne(id);
       res.status(200).send({
         data: clientes,
         message: "Cliente encontrado com sucesso",
@@ -31,10 +31,14 @@ class ControllerClientes {
 
   async Create(req, res) {
     try {
+      const loggedUser = req.headers?.clientes;
+      let role = 1;
+      if (loggedUser && loggedUser.role === 0) {
+        role = req.body.role;
+      }
+      const { nome, email, senha, ativo } = req.body;
 
-      const { nome, email, senha} = req.body;
-
-      await ServiceClientes.Create(nome, email, senha);
+      await ServiceClientes.Create(nome, email, senha, ativo, role);
       res.status(201).send({
         message: "Cliente criado com sucesso",
       });
@@ -45,12 +49,14 @@ class ControllerClientes {
     }
   }
 
-  async Update(req, res) {
+  Update(req, res) {
     try {
-      const id = req.params.id || req.headers?.user?.id;
+      const id = req.params.id;
       const nome = req.body.nome;
-      const email = req.body.email;
-      await ServiceClientes.Update(id, nome, email);
+      // const email = req.body.email;
+      // const senha = req.body.senha;
+    
+      ServiceClientes.Update(id, nome);
       res.status(200).send({
         message: "Cliente atualizado com sucesso",
       });
@@ -63,7 +69,7 @@ class ControllerClientes {
 
   async Delete(req, res) {
     try {
-      const id = req.params.id || req.headers?.user?.id;
+      const id = req.params.id 
       await ServiceClientes.Delete(id);
 
       res.status(204).send();
