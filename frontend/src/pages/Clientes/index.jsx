@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { deleteCliente, getClientes } from "../../api/clientes";
 import { Link, useNavigate } from "react-router-dom";
-import "./style.css";
+import "./styles.css";
 import { toast } from "react-toastify";
 
 function Clientes() {

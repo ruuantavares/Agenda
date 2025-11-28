@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { updateUser } from "../../api/clientes";
+import { updateCliente } from "../../api/clientes";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./styles.css";
 import { toast } from "react-toastify";
@@ -33,7 +33,7 @@ export default function UpdateCliente() {
   const handleSave = async (e) => {
     e.preventDefault();
     // Alterada função pra update
-    const response = await updateUser(prevCliente.id, cliente);
+    const response = await updateCliente(prevCliente.id, cliente);
 
     if (response.status === 200) {
       navigate("/clientes");

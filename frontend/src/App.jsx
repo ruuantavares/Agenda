@@ -22,7 +22,7 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/clientes" element={<Clientes />} />
           <Route path="/create/cliente" element={<CreateCliente />} />
-          <Route path="/update/Ccliente" element={<UpdateCliente />} />
+          <Route path="/update/cliente" element={<UpdateCliente />} />
         </Route>
       </Routes>
 

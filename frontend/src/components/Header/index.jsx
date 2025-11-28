@@ -14,13 +14,11 @@ export default function Header() {
           <button>Home</button>
         </Link>
         {!token ? null : (
-          <Link to="/clientes">
-            <button>Clientes</button>
+          <Link to="/create/cliente">
+            <button>Cadastrar</button>
           </Link>
         )}
-        <Link to="/atendimentos">
-          <button>Atendimentos</button>
-        </Link>
+
         <Link to="/login">
           <button>Login</button>
         </Link>
